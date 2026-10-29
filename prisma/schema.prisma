@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Member {
+  id                   String     @id @default(cuid())
+  discordId            String     @unique
+  discordUsername      String
+  robloxId             String?    @unique
+  robloxUsername       String?
+  currentDiscordRoleId String?
+  currentRoleName      String?
+  currentRobloxRank    Int?       @default(0)
+  status               String     @default("PENDING") // VERIFIED | PENDING | EXILED
+  isLocked             Boolean    @default(false)
+  exiledByDiscordId    String?
+  exiledAt             DateTime?
+  exileReason          String?
+  lastSyncedAt         DateTime   @default(now())
+  createdAt            DateTime   @default(now())
+  updatedAt            DateTime   @updatedAt
+
+  logsAffected         AuditLog[] @relation("TargetMemberLogs")
+
+  @@index([robloxUsername])
+  @@index([status])
+}
+
+model AuditLog {
+  id                String   @id @default(cuid())
+  action            String   // VERIFY | PROMOTE | DEMOTE | EXILE | UNEXILE | AUTO_SYNC | SYNC_ERROR | UNAUTHORIZED_ATTEMPT
+  targetMemberId    String?
+  targetMember      Member?  @relation("TargetMemberLogs", fields: [targetMemberId], references: [id])
+  targetSnapshot    String
+  executorDiscordId String
+  executorName      String
+  oldRoleId         String?
+  oldRoleName       String?
+  newRoleId         String?
+  newRoleName       String?
+  reason            String?
+  originChannel     String   @default("WEB_DASHBOARD")
+  createdAt         DateTime @default(now())
+
+  @@index([action])
+  @@index([executorDiscordId])
+  @@index([createdAt])
+}
+
+model SystemConfig {
+  id                  String   @id @default("default")
+  guildId             String   @default("1551630465524572372")
+  robloxGroupId       String   @default("171349866")
+  logChannelId        String?
+  syncIntervalSeconds Int      @default(60)
+  updatedAt           DateTime @updatedAt
+}

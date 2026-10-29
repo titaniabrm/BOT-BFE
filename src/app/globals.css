@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: #0A0A0A;
+  color: #f4f4f5;
+}
+
+@layer base {
+  :root {
+    --primary-red: #DC2626;
+    --secondary-red: #991B1B;
+    --accent-red: #EF4444;
+    --dark-bg: #0A0A0A;
+    --card-bg: #1A1A1A;
+    --border-color: #333333;
+  }
+}
