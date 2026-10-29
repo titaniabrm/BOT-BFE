@@ -27,20 +27,8 @@ model Member {
 
   logsAffected         AuditLog[] @relation("TargetMemberLogs")
 
-  // Índices otimizados para consultas rápidas
-  @@index([discordId])
-  @@index([robloxId])
   @@index([robloxUsername])
   @@index([status])
-  @@index([currentRobloxRank])
-  @@index([isLocked])
-  @@index([lastSyncedAt])
-  @@index([createdAt])
-  @@index([updatedAt])
-
-  // Índice composto para consultas frequentes
-  @@index([status, isLocked])
-  @@index([status, lastSyncedAt])
 }
 
 model AuditLog {
@@ -59,17 +47,9 @@ model AuditLog {
   originChannel     String   @default("WEB_DASHBOARD")
   createdAt         DateTime @default(now())
 
-  // Índices otimizados para consultas rápidas
   @@index([action])
   @@index([executorDiscordId])
-  @@index([targetMemberId])
   @@index([createdAt])
-  @@index([originChannel])
-
-  // Índices compostos para consultas frequentes
-  @@index([action, createdAt])
-  @@index([executorDiscordId, createdAt])
-  @@index([targetMemberId, createdAt])
 }
 
 model SystemConfig {
